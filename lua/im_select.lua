@@ -2,6 +2,9 @@ local M = {}
 
 M.closed = false
 
+local group_id = nil
+local enabled = false
+
 local function all_trim(s)
     return s:match("^%s*(.-)%s*$")
 end
@@ -42,13 +45,11 @@ local C = {
     -- default input method in normal mode.
     default_method_selected = "1033",
     -- input method to use when entering insert mode.
-    -- if nil, restores the previously used input method instead.
+    -- if nil, no input method switch on InsertEnter.
     insert_im = nil,
 
     -- Restore the default input method state when the following events are triggered
     set_default_events = { "InsertLeave", "CmdlineLeave" },
-    -- Restore the previous used input method state when the following events are triggered
-    set_previous_events = { "InsertEnter" },
 
     keep_quiet_on_no_binary = false,
 
@@ -104,16 +105,6 @@ local function set_opts(opts)
 
     if opts.set_default_events ~= nil and type(opts.set_default_events) == "table" then
         C.set_default_events = opts.set_default_events
-    end
-
-    if opts.set_previous_events ~= nil and type(opts.set_previous_events) == "table" then
-        C.set_previous_events = opts.set_previous_events
-    end
-
-    -- deprecated
-    if opts.disable_auto_restore == 1 then
-        print("[im-select]: `disable_auto_restore` is deprecated, use `set_previous_events` instead")
-        C.set_previous_events = {}
     end
 
     if opts.keep_quiet_on_no_binary then
@@ -176,19 +167,32 @@ end
 
 local function restore_default_im()
     local current = get_current_select(C.default_command)
-    vim.api.nvim_set_var("im_select_saved_state", current)
 
     if current ~= C.default_method_selected then
         change_im_select(C.default_command, C.default_method_selected)
     end
 end
 
-local function restore_previous_im()
-    local target = C.insert_im or vim.g["im_select_saved_state"]
+local function restore_insert_im()
     local current = get_current_select(C.default_command)
+    if current ~= C.insert_im then
+        change_im_select(C.default_command, C.insert_im)
+    end
+end
 
-    if current ~= target then
-        change_im_select(C.default_command, target)
+local function register_autocmds()
+    if C.insert_im ~= nil then
+        vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+            callback = restore_insert_im,
+            group = group_id,
+        })
+    end
+
+    if #C.set_default_events > 0 then
+        vim.api.nvim_create_autocmd(C.set_default_events, {
+            callback = restore_default_im,
+            group = group_id,
+        })
     end
 end
 
@@ -208,20 +212,29 @@ M.setup = function(opts)
     end
 
     -- set autocmd
-    local group_id = vim.api.nvim_create_augroup("im-select", { clear = true })
+    group_id = vim.api.nvim_create_augroup("im-select", { clear = true })
+    register_autocmds()
+    enabled = true
 
-    if #C.set_previous_events > 0 then
-        vim.api.nvim_create_autocmd(C.set_previous_events, {
-            callback = restore_previous_im,
-            group = group_id,
-        })
+    vim.api.nvim_create_user_command("ImSelectToggle", function()
+        M.toggle()
+    end, {})
+end
+
+M.toggle = function()
+    if group_id == nil then
+        vim.notify("[im-select]: not initialized, call setup() first", vim.log.levels.WARN)
+        return
     end
-
-    if #C.set_default_events > 0 then
-        vim.api.nvim_create_autocmd(C.set_default_events, {
-            callback = restore_default_im,
-            group = group_id,
-        })
+    if enabled then
+        vim.api.nvim_clear_autocmds({ group = group_id })
+        restore_default_im()
+        enabled = false
+        vim.notify("[im-select]: disabled", vim.log.levels.INFO)
+    else
+        register_autocmds()
+        enabled = true
+        vim.notify("[im-select]: enabled", vim.log.levels.INFO)
     end
 end
 

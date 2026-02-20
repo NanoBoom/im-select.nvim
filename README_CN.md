@@ -184,10 +184,6 @@ $ ibus engine xkb:us::eng
             -- "VimEnter" 和 "FocusGained" 已移除（会引起问题），如有需要可自行添加
             set_default_events = { "InsertLeave", "CmdlineLeave" },
 
-            -- 触发以下事件时恢复上次使用的输入法
-            -- 如果不想在进入 Insert 模式时恢复，设为空表即可：set_previous_events = {}
-            set_previous_events = { "InsertEnter" },
-
             -- 找不到二进制工具时是否显示安装提示
             keep_quiet_on_no_binary = false,
 
@@ -195,8 +191,8 @@ $ ibus engine xkb:us::eng
             async_switch_im = true,
 
             -- 指定进入 Insert 模式时使用的输入法。
-            -- 设置后，每次进入 Insert 模式都会切换到此输入法，而不是恢复上次使用的输入法。
-            -- 默认为 nil，即恢复上次使用的输入法。
+            -- 设置后，每次进入 Insert 模式都会切换到此输入法。
+            -- 默认为 nil，即进入 Insert 模式时不切换输入法。
             -- macOS 示例："com.sogou.inputmethod.sogou.pinyin"
             insert_im = nil,
         })

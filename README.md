@@ -184,12 +184,6 @@ Options with its default values
             -- "VimEnter" and "FocusGained" were removed for causing problems, add it by your needs
             set_default_events = { "InsertLeave", "CmdlineLeave" },
 
-            -- Restore the previous used input method state when the following events
-            -- are triggered, if you don't want to restore previous used im in Insert mode,
-            -- e.g. deprecated `disable_auto_restore = 1`, just let it empty
-            -- as `set_previous_events = {}`
-            set_previous_events = { "InsertEnter" },
-
             -- Show notification about how to install executable binary when binary missed
             keep_quiet_on_no_binary = false,
 
@@ -197,9 +191,8 @@ Options with its default values
             async_switch_im = true,
 
             -- Specify the input method to use when entering Insert mode.
-            -- If set, this IM will always be activated on InsertEnter, instead of
-            -- restoring the previously used IM.
-            -- If nil (default), the previously used IM will be restored.
+            -- If set, this IM will be activated on InsertEnter.
+            -- If nil (default), no IM switch happens on InsertEnter.
             -- Example for macOS: "com.sogou.inputmethod.sogou.pinyin"
             insert_im = nil,
         })
