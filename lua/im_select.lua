@@ -166,6 +166,13 @@ local function change_im_select(cmd, method)
 end
 
 local function restore_default_im()
+    -- 如果当前在 insert 模式，不切换
+    -- 这样可以防止 macOS 输入法切换触发的 FocusGained 事件导致循环
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == "i" or mode == "ic" or mode == "ix" then
+        return
+    end
+
     local current = get_current_select(C.default_command)
 
     if current ~= C.default_method_selected then
