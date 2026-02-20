@@ -41,6 +41,9 @@ local C = {
     default_command = { "im-select.exe" },
     -- default input method in normal mode.
     default_method_selected = "1033",
+    -- input method to use when entering insert mode.
+    -- if nil, restores the previously used input method instead.
+    insert_im = nil,
 
     -- Restore the default input method state when the following events are triggered
     set_default_events = { "InsertLeave", "CmdlineLeave" },
@@ -120,6 +123,10 @@ local function set_opts(opts)
     if opts.async_switch_im ~= nil and opts.async_switch_im == false then
         C.async_switch_im = false
     end
+
+    if opts.insert_im ~= nil and type(opts.insert_im) == "string" then
+        C.insert_im = opts.insert_im
+    end
 end
 
 local function get_current_select(cmd)
@@ -177,11 +184,11 @@ local function restore_default_im()
 end
 
 local function restore_previous_im()
+    local target = C.insert_im or vim.g["im_select_saved_state"]
     local current = get_current_select(C.default_command)
-    local saved = vim.g["im_select_saved_state"]
 
-    if current ~= saved then
-        change_im_select(C.default_command, saved)
+    if current ~= target then
+        change_im_select(C.default_command, target)
     end
 end
 

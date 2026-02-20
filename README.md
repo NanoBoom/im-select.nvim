@@ -194,7 +194,14 @@ Options with its default values
             keep_quiet_on_no_binary = false,
 
             -- Async run `default_command` to switch IM or not
-            async_switch_im = true
+            async_switch_im = true,
+
+            -- Specify the input method to use when entering Insert mode.
+            -- If set, this IM will always be activated on InsertEnter, instead of
+            -- restoring the previously used IM.
+            -- If nil (default), the previously used IM will be restored.
+            -- Example for macOS: "com.sogou.inputmethod.sogou.pinyin"
+            insert_im = nil,
         })
     end,
 }
