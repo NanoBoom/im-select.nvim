@@ -26,10 +26,9 @@
 
 #### 安装
 
-请安装 `im-select.exe` 并将其加入 `PATH`。
+请安装 `im-select-mspy.exe` 并将其加入 `PATH`。
 
-下载地址：[im-select](https://github.com/daipeihust/im-select)
-（`x64` 平台请下载 `64-bit` 版本。）
+下载地址：[im-select-mspy.exe](https://github.com/daipeihust/im-select/raw/refs/heads/master/win-mspy/out/x64/im-select-mspy.exe)
 
 #### 检查
 
@@ -37,21 +36,21 @@
 
 ```bash
 # 查找命令
-$ where im-select.exe
+$ where im-select-mspy.exe
 
 # 获取当前输入法名称
-$ im-select.exe
+$ im-select-mspy.exe
 
 # 尝试切换到英文键盘
-$ im-select.exe 1033
+$ im-select-mspy.exe 英文模式
 ```
 
 或直接在 NeoVim 中运行：
 
 ```bash
-:!where im-select.exe
+:!where im-select-mspy.exe
 
-:!im-select.exe 1003
+:!im-select-mspy.exe 英文模式
 ```
 
 ### 1.2 macOS
@@ -163,22 +162,22 @@ $ ibus engine xkb:us::eng
     config = function()
         require('im_select').setup({
             -- 在 `normal` 模式下切换到此输入法
-            -- Windows/WSL 默认值："1033"（美式英语键盘）
+            -- Windows/WSL 默认值："英文模式"（英文模式）
             -- macOS 默认值："com.apple.keylayout.ABC"（US）
             -- Linux 默认值：
             --               Fcitx5: "keyboard-us"
             --               Fcitx:  "1"
             --               IBus:   "xkb:us::eng"
-            -- 可用 `im-select` 或 `fcitx5-remote -n` 获取输入法名称
+            -- 可用 `im-select-mspy.exe` 或 `fcitx5-remote -n` 获取输入法名称
             default_im_select  = "com.apple.keylayout.ABC",
 
             -- 可以是二进制名称、完整路径，或包含额外参数的表，例如：
-            -- 'im-select'、'/usr/local/bin/im-select'（无额外参数）
+            -- 'im-select-mspy'、'/usr/local/bin/im-select-mspy'（无额外参数）
             -- 或 { "AIMSwitcher.exe", "--imm" }（需要额外参数）
-            -- Windows/WSL 默认值："im-select.exe"
+            -- Windows/WSL 默认值："im-select-mspy.exe"
             -- macOS 默认值："macism"
             -- Linux 默认值："fcitx5-remote" 或 "fcitx-remote" 或 "ibus"
-            default_command = "im-select.exe",
+            default_command = "im-select-mspy.exe",
 
             -- 触发以下事件时恢复默认输入法
             -- "VimEnter" 和 "FocusGained" 已移除（会引起问题），如有需要可自行添加

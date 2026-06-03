@@ -41,9 +41,9 @@ end
 -- local config
 local C = {
     -- im-select binary's name, or the binary's full path
-    default_command = { "im-select.exe" },
+    default_command = { "im-select-mspy.exe" },
     -- default input method in normal mode.
-    default_method_selected = "1033",
+    default_method_selected = "英文模式",
     -- input method to use when entering insert mode.
     -- if nil, no input method switch on InsertEnter.
     insert_im = nil,
@@ -63,8 +63,8 @@ local function set_default_config()
         C.default_method_selected = "com.apple.keylayout.ABC"
     elseif current_os == "Windows" or current_os == "WSL" then
         -- WSL share same config with Windows
-        C.default_command = { "im-select.exe" }
-        C.default_method_selected = "1033"
+        C.default_command = { "im-select-mspy.exe" }
+        C.default_method_selected = "英文模式"
     else
         -- 0 for close, 1 for inactive, 2 for active
         C.default_command = { "fcitx-remote" }
@@ -213,7 +213,7 @@ M.setup = function(opts)
 
     if vim.fn.executable(C.default_command[1]) ~= 1 then
         if not C.keep_quiet_on_no_binary then
-            vim.api.nvim_err_writeln([[[im-select]: binary tools missed, please follow installation manual in README]])
+            vim.api.nvim_err_writeln([[[im-select]: binary tool ']] .. C.default_command[1] .. [[' missed, please follow installation manual in README]])
         end
         return
     end

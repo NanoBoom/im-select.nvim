@@ -26,10 +26,9 @@ Other frameworks on Linux's support is welcome!
 
 #### Install
 
-Please install `im-select.exe` and put it into your `PATH`.
+Please install `im-select-mspy.exe` and put it into your `PATH`.
 
-Download URL: [im-select](https://github.com/daipeihust/im-select)
-(For `x64` platform, please download the `64-bit` version.)
+Download URL: [im-select-mspy.exe](https://github.com/daipeihust/im-select/raw/refs/heads/master/win-mspy/out/x64/im-select-mspy.exe)
 
 #### Check
 
@@ -37,21 +36,21 @@ You can check if the `im-select` executable can be properly accessed from Neovim
 
 ```bash
 # find the command
-$ where im-select.exe
+$ where im-select-mspy.exe
 
 # Get current im name
-$ im-select.exe
+$ im-select-mspy.exe
 
 # Try to switch to English keyboard
-$ im-select.exe 1033
+$ im-select-mspy.exe 英文模式
 ```
 
 Or run shell command directly from NeoVim
 
 ```bash
-:!where im-select.exe
+:!where im-select-mspy.exe
 
-:!im-select.exe 1003
+:!im-select-mspy.exe 英文模式
 ```
 
 ### 1.2 macOS
@@ -163,22 +162,22 @@ Options with its default values
     config = function()
         require('im_select').setup({
             -- IM will be set to `default_im_select` in `normal` mode
-            -- For Windows/WSL, default: "1033", aka: English US Keyboard
+            -- For Windows/WSL, default: "英文模式", aka: English Mode
             -- For macOS, default: "com.apple.keylayout.ABC", aka: US
             -- For Linux, default:
             --               "keyboard-us" for Fcitx5
             --               "1" for Fcitx
             --               "xkb:us::eng" for ibus
-            -- You can use `im-select` or `fcitx5-remote -n` to get the IM's name
+            -- You can use `im-select-mspy.exe` or `fcitx5-remote -n` to get the IM's name
             default_im_select  = "com.apple.keylayout.ABC",
 
-            -- Can be binary's name, binary's full path, or a table, e.g. 'im-select',
-            -- '/usr/local/bin/im-select' for binary without extra arguments,
+            -- Can be binary's name, binary's full path, or a table, e.g. 'im-select-mspy',
+            -- '/usr/local/bin/im-select-mspy' for binary without extra arguments,
             -- or { "AIMSwitcher.exe", "--imm" } for binary need extra arguments to work.
-            -- For Windows/WSL, default: "im-select.exe"
+            -- For Windows/WSL, default: "im-select-mspy.exe"
             -- For macOS, default: "macism"
             -- For Linux, default: "fcitx5-remote" or "fcitx-remote" or "ibus"
-            default_command = "im-select.exe",
+            default_command = "im-select-mspy.exe",
 
             -- Restore the default input method state when the following events are triggered
             -- "VimEnter" and "FocusGained" were removed for causing problems, add it by your needs
