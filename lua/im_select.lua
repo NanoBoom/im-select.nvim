@@ -129,6 +129,7 @@ local function get_current_select(cmd)
 end
 
 local function change_im_select(cmd, method)
+    M.closed = false
     local args = { unpack(cmd, 2) }
 
     if cmd[1]:find("fcitx5-remote", 1, true) then
@@ -165,7 +166,22 @@ local function change_im_select(cmd, method)
     end
 end
 
-local function restore_default_im()
+-- 我们最后一次请求切换到的输入法。
+-- 决策只和这个变量比较，不和 OS 实时查询比较：
+-- change_im_select() 是异步的，OS 查询会和我们自己未落地的切换产生竞态
+-- （比如快速 Esc -> i，InsertLeave 的切换晚于 InsertEnter 的查询落地，
+-- 导致 insert 模式下被切回默认输入法）
+local requested_method = nil
+
+local function switch_to(method)
+    if requested_method == method then
+        return
+    end
+    requested_method = method
+    change_im_select(C.default_command, method)
+end
+
+local function restore_default_im(event_args)
     -- 如果当前在 insert 模式，不切换
     -- 这样可以防止 macOS 输入法切换触发的 FocusGained 事件导致循环
     local mode = vim.api.nvim_get_mode().mode
@@ -173,18 +189,16 @@ local function restore_default_im()
         return
     end
 
-    local current = get_current_select(C.default_command)
-
-    if current ~= C.default_method_selected then
-        change_im_select(C.default_command, C.default_method_selected)
+    -- 失焦期间外部世界可能改过输入法，缓存不可信，重新查询一次
+    if event_args and event_args.event == "FocusGained" then
+        requested_method = get_current_select(C.default_command)
     end
+
+    switch_to(C.default_method_selected)
 end
 
 local function restore_insert_im()
-    local current = get_current_select(C.default_command)
-    if current ~= C.insert_im then
-        change_im_select(C.default_command, C.insert_im)
-    end
+    switch_to(C.insert_im)
 end
 
 local function register_autocmds()
